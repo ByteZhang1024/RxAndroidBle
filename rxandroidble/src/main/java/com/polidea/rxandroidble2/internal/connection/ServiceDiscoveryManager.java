@@ -6,14 +6,12 @@ import android.bluetooth.BluetoothGattService;
 
 import androidx.annotation.NonNull;
 
-import com.polidea.rxandroidble2.RxBleCustomOperation;
 import com.polidea.rxandroidble2.RxBleDeviceServices;
 import com.polidea.rxandroidble2.internal.operations.OperationsProvider;
 import com.polidea.rxandroidble2.internal.operations.ServiceDiscoveryOperation;
 import com.polidea.rxandroidble2.internal.operations.TimeoutConfiguration;
 import com.polidea.rxandroidble2.internal.serialization.ConnectionOperationQueue;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -21,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 
 import bleshadow.javax.inject.Inject;
 import io.reactivex.Maybe;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;

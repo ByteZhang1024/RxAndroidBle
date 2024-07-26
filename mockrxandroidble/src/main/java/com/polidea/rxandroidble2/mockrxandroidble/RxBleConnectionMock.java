@@ -182,6 +182,16 @@ public class RxBleConnectionMock implements RxBleConnection {
     }
 
     @Override
+    public Single<RxBleDeviceServices> discoverServices(long timeout, @NonNull TimeUnit timeUnit, Boolean clearCache) {
+        return null;
+    }
+
+    @Override
+    public boolean refreshGatt() {
+        return false;
+    }
+
+    @Override
     @SuppressWarnings("deprecation")
     public Single<BluetoothGattCharacteristic> getCharacteristic(@NonNull final UUID characteristicUuid) {
         return discoverServices()

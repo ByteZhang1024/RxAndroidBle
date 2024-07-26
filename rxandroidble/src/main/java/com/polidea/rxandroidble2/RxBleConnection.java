@@ -297,7 +297,7 @@ public interface RxBleConnection {
      */
     Single<RxBleDeviceServices> discoverServices(@IntRange(from = 1) long timeout, @NonNull TimeUnit timeUnit, Boolean clearCache);
 
-    public boolean refreshGatt();
+    boolean refreshGatt();
 
     /**
      * @see #setupNotification(UUID, NotificationSetupMode)  with default setup mode.
