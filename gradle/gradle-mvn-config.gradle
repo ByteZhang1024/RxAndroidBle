@@ -62,6 +62,9 @@ afterEvaluate { project ->
         publications {
             release(MavenPublication) {
                 afterEvaluate {
+                    groupId = 'com.github.ByteZhang1024'
+                    artifactId = 'RxAndroidBle'
+                    version = '1.18.3-SNAPSHOT'
                     if (isAndroidProject(project)) {
                         from components.release
                     } else {
