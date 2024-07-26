@@ -59,15 +59,6 @@ if (isAndroidProject()) {
 
 afterEvaluate { project ->
     publishing {
-        repositories {
-            maven {
-                url = uri(isReleaseBuild() ? getReleaseRepositoryUrl() : getSnapshotRepositoryUrl())
-                credentials {
-                    username = getRepositoryUsername()
-                    password = getRepositoryPassword()
-                }
-            }
-        }
         publications {
             release(MavenPublication) {
                 afterEvaluate {

@@ -9,7 +9,7 @@ import com.polidea.rxandroidble2.ClientScope;
 import java.util.HashSet;
 import java.util.Set;
 
-import bleshadow.javax.inject.Inject;
+import javax.inject.Inject;
 
 @ClientScope
 public class CheckerPermission {

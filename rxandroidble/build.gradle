@@ -58,10 +58,11 @@ dependencies {
     api rootProject.ext.libs.rxjava2
     api rootProject.ext.libs.annotations
     implementation rootProject.ext.libs.rxrelay2
-    implementation project(path: ':dagger-library-shadow', transitive: false, configuration: 'shadow')
-    annotationProcessor project(path: ':dagger-compiler-shadow', transitive: false, configuration: 'shadow')
+    implementation rootProject.ext.libs.dagger
+    annotationProcessor rootProject.ext.libs.dagger_compiler
 
-    compileOnly files(tasks.getByPath(':dagger-library-shadow:shadowJar').archiveFile)
+    // Test dependencies
+    testImplementation rootProject.ext.libs.dagger
 
     // Test dependencies
     testImplementation rootProject.ext.libs.junit

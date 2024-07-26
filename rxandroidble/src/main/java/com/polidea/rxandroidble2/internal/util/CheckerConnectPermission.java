@@ -4,8 +4,8 @@ package com.polidea.rxandroidble2.internal.util;
 import com.polidea.rxandroidble2.ClientComponent;
 import com.polidea.rxandroidble2.ClientScope;
 
-import bleshadow.javax.inject.Inject;
-import bleshadow.javax.inject.Named;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @ClientScope
 public class CheckerConnectPermission {

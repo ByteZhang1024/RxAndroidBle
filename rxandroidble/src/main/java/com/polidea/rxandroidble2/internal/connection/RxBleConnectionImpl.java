@@ -40,9 +40,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import bleshadow.javax.inject.Inject;
-import bleshadow.javax.inject.Named;
-import bleshadow.javax.inject.Provider;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Provider;
 import io.reactivex.Completable;
 import io.reactivex.CompletableSource;
 import io.reactivex.Observable;
@@ -161,6 +161,16 @@ public class RxBleConnectionImpl implements RxBleConnection {
     }
 
     @Override
+    public Single<RxBleDeviceServices> discoverServices(long timeout, @NonNull TimeUnit timeUnit, Boolean clearCache) {
+        return serviceDiscoveryManager.getDiscoverServicesSingle(timeout, timeUnit, clearCache);
+    }
+
+    @Override
+    public boolean refreshGatt() {
+        return serviceDiscoveryManager.refreshGatt();
+    }
+
+    @Override
     @Deprecated
     public Single<BluetoothGattCharacteristic> getCharacteristic(@NonNull final UUID characteristicUuid) {
         return discoverServices()
@@ -262,9 +272,9 @@ public class RxBleConnectionImpl implements RxBleConnection {
     @Override
     public Single<byte[]> writeCharacteristic(@NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] data) {
         return illegalOperationChecker.checkAnyPropertyMatches(
-                characteristic,
-                PROPERTY_WRITE | PROPERTY_WRITE_NO_RESPONSE | PROPERTY_SIGNED_WRITE
-        ).andThen(operationQueue.queue(operationsProvider.provideWriteCharacteristic(characteristic, data)))
+                        characteristic,
+                        PROPERTY_WRITE | PROPERTY_WRITE_NO_RESPONSE | PROPERTY_SIGNED_WRITE
+                ).andThen(operationQueue.queue(operationsProvider.provideWriteCharacteristic(characteristic, data)))
                 .firstOrError();
     }
 

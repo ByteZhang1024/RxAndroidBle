@@ -4,8 +4,8 @@ import android.annotation.TargetApi;
 
 import com.polidea.rxandroidble2.ClientComponent;
 
-import bleshadow.javax.inject.Inject;
-import bleshadow.javax.inject.Named;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @TargetApi(31 /* Build.VERSION_CODES.S */)
 public class LocationServicesStatusApi31 implements LocationServicesStatus {
