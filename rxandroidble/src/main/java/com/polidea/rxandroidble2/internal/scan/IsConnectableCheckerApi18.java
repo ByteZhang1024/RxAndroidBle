@@ -5,7 +5,7 @@ import android.bluetooth.le.ScanResult;
 import androidx.annotation.RestrictTo;
 
 import com.polidea.rxandroidble2.scan.IsConnectable;
-import bleshadow.javax.inject.Inject;
+import javax.inject.Inject;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class IsConnectableCheckerApi18 implements IsConnectableChecker {

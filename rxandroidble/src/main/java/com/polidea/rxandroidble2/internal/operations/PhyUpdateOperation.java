@@ -15,7 +15,7 @@ import com.polidea.rxandroidble2.internal.connection.RxBleGattCallback;
 
 import java.util.Set;
 
-import bleshadow.javax.inject.Inject;
+import javax.inject.Inject;
 import io.reactivex.Single;
 
 @RequiresApi(26 /* Build.VERSION_CODES.O */)
