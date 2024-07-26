@@ -78,7 +78,8 @@ public interface RxBleConnection {
     @IntDef({BluetoothGatt.CONNECTION_PRIORITY_LOW_POWER,
             BluetoothGatt.CONNECTION_PRIORITY_BALANCED,
             BluetoothGatt.CONNECTION_PRIORITY_HIGH})
-    @interface ConnectionPriority { }
+    @interface ConnectionPriority {
+    }
 
     @Deprecated
     interface Connector {
@@ -163,11 +164,11 @@ public interface RxBleConnection {
          * Setter for a strategy used to mark batch write completed. Only after previous batch has finished, the next (if any left) can be
          * written.
          * If this is not specified - the next batch of bytes is written right after the previous one has finished.
-         *
+         * <p>
          * A bytes batch is a part (slice) of the original byte array to write. Imagine a byte array of {0, 1, 2, 3, 4} where the maximum
          * number of bytes that may be transmitted at once is 2. Then the original byte array will be transmitted in three batches:
          * {0, 1}, {2, 3}, {4}
-         *
+         * <p>
          * It is expected that the Observable returned from the writeOperationAckStrategy will emit exactly the same events as the source,
          * however you may delay them at your pace.
          *
@@ -194,7 +195,7 @@ public interface RxBleConnection {
      * aiming to postpone the retry procedure.
      * - If that Observable calls {@code onComplete} or {@code onError} then {@code retry} will call
      * {@code onCompleted} or {@code onError} on the child subscription. The emission will be forwarded as an operation result.
-     *
+     * <p>
      * For general documentation related to retrying please refer to http://reactivex.io/documentation/operators/retry.html
      */
     interface WriteOperationRetryStrategy extends ObservableTransformer<WriteOperationRetryStrategy.LongWriteFailure,
@@ -209,7 +210,7 @@ public interface RxBleConnection {
              * Default constructor
              *
              * @param batchIndex the zero-based batch index on which the write request failed
-             * @param cause       the failed cause of the write request
+             * @param cause      the failed cause of the write request
              */
             public LongWriteFailure(int batchIndex, BleGattException cause) {
                 this.batchIndex = batchIndex;
@@ -246,7 +247,7 @@ public interface RxBleConnection {
      * <p>
      * Result of the discovery is cached internally so consecutive calls won't trigger BLE operation and can be
      * considered relatively lightweight.
-     *
+     * <p>
      * Uses default timeout of 20 seconds
      *
      * @return Observable emitting result a GATT service discovery.
@@ -262,10 +263,10 @@ public interface RxBleConnection {
      * <p>
      * Result of the discovery is cached internally so consecutive calls won't trigger BLE operation and can be
      * considered relatively lightweight.
-     *
+     * <p>
      * Timeouts after specified amount of time.
      *
-     * @param timeout multiplier of TimeUnit after which the discovery will timeout in case of no return values
+     * @param timeout  multiplier of TimeUnit after which the discovery will timeout in case of no return values
      * @param timeUnit TimeUnit for the timeout
      * @return Observable emitting result a GATT service discovery.
      * @throws BleGattCannotStartException with {@link BleGattOperationType#SERVICE_DISCOVERY} type, when it wasn't possible to start
@@ -273,6 +274,30 @@ public interface RxBleConnection {
      * @throws BleGattException            in case of GATT operation error with {@link BleGattOperationType#SERVICE_DISCOVERY} type.
      */
     Single<RxBleDeviceServices> discoverServices(@IntRange(from = 1) long timeout, @NonNull TimeUnit timeUnit);
+
+    /**
+     * Performs GATT service discovery and emits discovered results. After service discovery you can walk through
+     * {@link android.bluetooth.BluetoothGattService}s and {@link BluetoothGattCharacteristic}s.
+     * <p>
+     * Result of the discovery is cached internally so consecutive calls won't trigger BLE operation and can be
+     * considered relatively lightweight.
+     * <p>
+     * Timeouts after specified amount of time.
+     * <p>
+     * The cache can be cleared to perform a new Gatt Discover and maybe find a service previously hidden
+     *
+     * @param timeout    multiplier of TimeUnit after which the discovery will timeout in case of no return values
+     * @param timeUnit   TimeUnit for the timeout
+     * @param clearCache Flag to ask the cache clearing (Warning, this functionnality can alter the good working of your app
+     *                   You should have strong knowledge of how it works)
+     * @return Observable emitting result a GATT service discovery.
+     * @throws BleGattCannotStartException with {@link BleGattOperationType#SERVICE_DISCOVERY} type, when it wasn't possible to start
+     *                                     the discovery for internal reasons.
+     * @throws BleGattException            in case of GATT operation error with {@link BleGattOperationType#SERVICE_DISCOVERY} type.
+     */
+    Single<RxBleDeviceServices> discoverServices(@IntRange(from = 1) long timeout, @NonNull TimeUnit timeUnit, Boolean clearCache);
+
+    public boolean refreshGatt();
 
     /**
      * @see #setupNotification(UUID, NotificationSetupMode)  with default setup mode.
@@ -290,17 +315,17 @@ public interface RxBleConnection {
      * characteristic and the lifecycle of the notification will be shared among them.
      * <p>
      * Notification is automatically unregistered once this observable is unsubscribed.
-     *
+     * <p>
      * NOTE: due to stateful nature of characteristics if one will setupIndication() before setupNotification()
      * the notification will not be set up and will emit an BleCharacteristicNotificationOfOtherTypeAlreadySetException
      *
      * @param characteristicUuid Characteristic UUID for notification setup.
-     * @param setupMode Configures how the notification is set up. For available modes see {@link NotificationSetupMode}.
+     * @param setupMode          Configures how the notification is set up. For available modes see {@link NotificationSetupMode}.
      * @return Observable emitting another observable when the notification setup is complete.
      * @throws BleCharacteristicNotFoundException              if characteristic with given UUID hasn't been found.
      * @throws BleCannotSetCharacteristicNotificationException if setup process notification setup process fail. This may be an internal
      *                                                         reason or lack of permissions.
-     * @throws BleConflictingNotificationAlreadySetException if indication is already setup for this characteristic
+     * @throws BleConflictingNotificationAlreadySetException   if indication is already setup for this characteristic
      */
     Observable<Observable<byte[]>> setupNotification(@NonNull UUID characteristicUuid, @NonNull NotificationSetupMode setupMode);
 
@@ -318,11 +343,11 @@ public interface RxBleConnection {
      * {@link RxBleConnection#discoverServices()}
      *
      * @param characteristic Characteristic for notification setup.
-     * @param setupMode Configures how the notification is set up. For available modes see {@link NotificationSetupMode}.
+     * @param setupMode      Configures how the notification is set up. For available modes see {@link NotificationSetupMode}.
      * @return Observable emitting another observable when the notification setup is complete.
      * @throws BleCannotSetCharacteristicNotificationException if setup process notification setup process fail. This may be an internal
      *                                                         reason or lack of permissions.
-     * @throws BleConflictingNotificationAlreadySetException if indication is already setup for this characteristic
+     * @throws BleConflictingNotificationAlreadySetException   if indication is already setup for this characteristic
      */
     Observable<Observable<byte[]>> setupNotification(@NonNull BluetoothGattCharacteristic characteristic,
                                                      @NonNull NotificationSetupMode setupMode);
@@ -348,12 +373,12 @@ public interface RxBleConnection {
      * the indication will not be set up and will emit an BleCharacteristicNotificationOfOtherTypeAlreadySetException
      *
      * @param characteristicUuid Characteristic UUID for indication setup.
-     * @param setupMode Configures how the notification is set up. For available modes see {@link NotificationSetupMode}.
+     * @param setupMode          Configures how the notification is set up. For available modes see {@link NotificationSetupMode}.
      * @return Observable emitting another observable when the indication setup is complete.
      * @throws BleCharacteristicNotFoundException              if characteristic with given UUID hasn't been found.
      * @throws BleCannotSetCharacteristicNotificationException if setup process indication setup process fail. This may be an internal
      *                                                         reason or lack of permissions.
-     * @throws BleConflictingNotificationAlreadySetException if notification is already setup for this characteristic
+     * @throws BleConflictingNotificationAlreadySetException   if notification is already setup for this characteristic
      */
     Observable<Observable<byte[]>> setupIndication(@NonNull UUID characteristicUuid, @NonNull NotificationSetupMode setupMode);
 
@@ -371,11 +396,11 @@ public interface RxBleConnection {
      * {@link RxBleConnection#discoverServices()}
      *
      * @param characteristic Characteristic for indication setup.
-     * @param setupMode Configures how the notification is set up. For available modes see {@link NotificationSetupMode}.
+     * @param setupMode      Configures how the notification is set up. For available modes see {@link NotificationSetupMode}.
      * @return Observable emitting another observable when the indication setup is complete.
      * @throws BleCannotSetCharacteristicNotificationException if setup process indication setup process fail. This may be an internal
      *                                                         reason or lack of permissions.
-     * @throws BleConflictingNotificationAlreadySetException if notification is already setup for this characteristic
+     * @throws BleConflictingNotificationAlreadySetException   if notification is already setup for this characteristic
      */
     Observable<Observable<byte[]>> setupIndication(@NonNull BluetoothGattCharacteristic characteristic,
                                                    @NonNull NotificationSetupMode setupMode);
@@ -411,8 +436,8 @@ public interface RxBleConnection {
      *
      * @param characteristic Requested characteristic.
      * @return Observable emitting characteristic value or an error in case of failure.
-     * @throws BleGattCannotStartException        if read operation couldn't be started for internal reason.
-     * @throws BleGattException                   if read operation failed
+     * @throws BleGattCannotStartException if read operation couldn't be started for internal reason.
+     * @throws BleGattException            if read operation failed
      * @see #getCharacteristic(UUID) to obtain the characteristic.
      * @see #discoverServices() to obtain the characteristic.
      */
@@ -433,7 +458,7 @@ public interface RxBleConnection {
      * Performs GATT write operation on a given characteristic.
      *
      * @param bluetoothGattCharacteristic Characteristic to write.
-     * @param data the byte array to write
+     * @param data                        the byte array to write
      * @return Observable emitting written data or an error in case of failure.
      * @throws BleGattCannotStartException if write operation couldn't be started for internal reason.
      * @throws BleGattException            if write operation failed
@@ -454,9 +479,9 @@ public interface RxBleConnection {
     /**
      * Performs GATT read operation on a descriptor from a characteristic with a given UUID from a service with a given UUID.
      *
-     * @param serviceUuid Requested {@link android.bluetooth.BluetoothGattService} UUID
+     * @param serviceUuid        Requested {@link android.bluetooth.BluetoothGattService} UUID
      * @param characteristicUuid Requested {@link android.bluetooth.BluetoothGattCharacteristic} UUID
-     * @param descriptorUuid Requested {@link android.bluetooth.BluetoothGattDescriptor} UUID
+     * @param descriptorUuid     Requested {@link android.bluetooth.BluetoothGattDescriptor} UUID
      * @return Observable emitting the descriptor value after read or an error in case of failure.
      * @throws BleGattCannotStartException if read operation couldn't be started for internal reason.
      * @throws BleGattException            if read operation failed
@@ -480,15 +505,15 @@ public interface RxBleConnection {
     /**
      * Performs GATT write operation on a descriptor from a characteristic with a given UUID from a service with a given UUID.
      *
-     * @param serviceUuid Requested {@link android.bluetooth.BluetoothGattDescriptor} UUID
+     * @param serviceUuid        Requested {@link android.bluetooth.BluetoothGattDescriptor} UUID
      * @param characteristicUuid Requested {@link android.bluetooth.BluetoothGattCharacteristic} UUID
-     * @param descriptorUuid Requested {@link android.bluetooth.BluetoothGattDescriptor} UUID
+     * @param descriptorUuid     Requested {@link android.bluetooth.BluetoothGattDescriptor} UUID
      * @return Completable which completes after a successful write operation or an error in case of failure.
      * @throws BleGattCannotStartException if write operation couldn't be started for internal reason.
      * @throws BleGattException            if write operation failed
      */
     Completable writeDescriptor(@NonNull UUID serviceUuid, @NonNull UUID characteristicUuid,
-                                       @NonNull UUID descriptorUuid, @NonNull byte[] data);
+                                @NonNull UUID descriptorUuid, @NonNull byte[] data);
 
     /**
      * Performs GATT write operation on a given descriptor.
@@ -566,7 +591,7 @@ public interface RxBleConnection {
 
     /**
      * Performs GATT MTU (Maximum Transfer Unit) request.
-     *
+     * <p>
      * Timeouts after 10 seconds.
      *
      * @return Observable emitting result the MTU requested.
@@ -595,16 +620,16 @@ public interface RxBleConnection {
     /**
      * Performs set preferred PHY request.
      *
-     * @param txPhy Sets the preferred transmitter (Tx) PHY. Use static values defined by the library, e.g. {@link RxBlePhy#PHY_1M}.
-     * @param rxPhy Sets the preferred receiver (Rx) PHY. Use static values defined by the library, e.g. {@link RxBlePhy#PHY_1M}.
+     * @param txPhy      Sets the preferred transmitter (Tx) PHY. Use static values defined by the library, e.g. {@link RxBlePhy#PHY_1M}.
+     * @param rxPhy      Sets the preferred receiver (Rx) PHY. Use static values defined by the library, e.g. {@link RxBlePhy#PHY_1M}.
      * @param phyOptions Sets the preferred coding to use when transmitting on the LE Coded PHY. Use static values defined by the library,
      *                   e.g. {@link RxBlePhyOption}.
      * @return Observable emitting negotiated PHY values pair.
      * @throws BleGattException in case of GATT operation error with {@link BleGattOperationType#PHY_UPDATE} type.
      * @implNote In case the library is outdated and does not implement expected pre-defined static objects to use, one can implement their
-     *           own objects and pass as parameters which should unblock the use-case. In this case please consider making a PR to the
-     *           library. Please keep in mind that passing custom implementations of RxBlePhy or RxBlePhyOption is permitted for unblocking,
-     *           it is also considered an undefined behaviour and may break with subsequent releases.
+     * own objects and pass as parameters which should unblock the use-case. In this case please consider making a PR to the
+     * library. Please keep in mind that passing custom implementations of RxBlePhy or RxBlePhyOption is permitted for unblocking,
+     * it is also considered an undefined behaviour and may break with subsequent releases.
      */
     @RequiresApi(26 /* Build.VERSION_CODES.O */)
     Single<PhyPair> setPreferredPhy(Set<RxBlePhy> txPhy, Set<RxBlePhy> rxPhy, RxBlePhyOption phyOptions);
