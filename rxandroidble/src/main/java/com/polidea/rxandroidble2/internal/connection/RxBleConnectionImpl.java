@@ -161,6 +161,16 @@ public class RxBleConnectionImpl implements RxBleConnection {
     }
 
     @Override
+    public Single<RxBleDeviceServices> discoverServices(long timeout, @NonNull TimeUnit timeUnit, Boolean clearCache) {
+        return serviceDiscoveryManager.getDiscoverServicesSingle(timeout, timeUnit, clearCache);
+    }
+
+    @Override
+    public boolean refreshGatt() {
+        return serviceDiscoveryManager.refreshGatt();
+    }
+
+    @Override
     @Deprecated
     public Single<BluetoothGattCharacteristic> getCharacteristic(@NonNull final UUID characteristicUuid) {
         return discoverServices()
