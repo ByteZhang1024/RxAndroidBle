@@ -59,17 +59,20 @@ if (isAndroidProject()) {
 
 afterEvaluate { project ->
     publishing {
-        repositories {
-            maven {
-                url = uri(isReleaseBuild() ? getReleaseRepositoryUrl() : getSnapshotRepositoryUrl())
-                credentials {
-                    username = getRepositoryUsername()
-                    password = getRepositoryPassword()
-                }
-            }
-        }
+//        repositories {
+//            maven {
+//                url = uri(isReleaseBuild() ? getReleaseRepositoryUrl() : getSnapshotRepositoryUrl())
+//                credentials {
+//                    username = getRepositoryUsername()
+//                    password = getRepositoryPassword()
+//                }
+//            }
+//        }
         publications {
             release(MavenPublication) {
+                groupId = 'com.github.ByteZhang1024'
+                artifactId = 'RxAndroidBle'
+                version = '1.18.2-SNAPSHOT'
                 afterEvaluate {
                     if (isAndroidProject(project)) {
                         from components.release

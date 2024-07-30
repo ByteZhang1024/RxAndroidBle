@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import bleshadow.javax.inject.Inject;
+import javax.inject.Inject;
 
 public class ScanRecordParser {
 

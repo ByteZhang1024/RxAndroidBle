@@ -6,7 +6,7 @@ import androidx.annotation.RequiresApi;
 import androidx.annotation.RestrictTo;
 
 import com.polidea.rxandroidble2.scan.IsConnectable;
-import bleshadow.javax.inject.Inject;
+import javax.inject.Inject;
 
 @RequiresApi(26 /* Build.VERSION_CODES.O */)
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)

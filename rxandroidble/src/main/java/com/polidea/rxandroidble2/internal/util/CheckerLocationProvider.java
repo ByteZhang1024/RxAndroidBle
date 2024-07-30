@@ -9,7 +9,7 @@ import android.provider.Settings;
 
 import androidx.annotation.RequiresApi;
 
-import bleshadow.javax.inject.Inject;
+import javax.inject.Inject;
 
 import com.polidea.rxandroidble2.internal.RxBleLog;
 

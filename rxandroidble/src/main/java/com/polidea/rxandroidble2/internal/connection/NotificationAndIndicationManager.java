@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import bleshadow.javax.inject.Inject;
-import bleshadow.javax.inject.Named;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableTransformer;

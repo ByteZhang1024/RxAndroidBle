@@ -6,7 +6,7 @@ import android.bluetooth.BluetoothProfile;
 
 import java.util.List;
 
-import bleshadow.javax.inject.Inject;
+import javax.inject.Inject;
 
 public class BluetoothManagerWrapper {
 
